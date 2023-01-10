@@ -2150,7 +2150,7 @@ This is like `org-noter-insert-note', except it will toggle `org-noter-insert-no
             ((and doc-file (not (string= doc-file (org-noter--session-property-text session))))
              (setq ignore-until-level (org-element-property :level headline)) nil)
             (t ,@body))))
-       nil ,match-first org-noter--note-search-no-recurse)))
+       nil ,match-first (delete 'headline (append org-element-all-elements nil)))))
 
 (defun org-noter-sync-prev-page-or-chapter ()
   "Show previous page or chapter that has notes, in relation to the current page or chapter.
