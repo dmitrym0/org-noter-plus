@@ -30,14 +30,12 @@ Test
 
 
 (describe "org-noter locations"
-          (describe "basic location parsing works"
-                    (before-each
-                     )
+          (before-each
+           (create-org-noter-test-session)
+           )
 
-                       (describe "page locations"
-                              (before-each
-                               (create-org-noter-test-session)
-                               )
+          (describe "basic location parsing works"
+                    (describe "page locations"
                               (it "can parse a page location"
                                   (with-mock-contents
                                    mock-contents-simple-notes-file-with-locations
@@ -51,6 +49,29 @@ Test
                                    ))
 
                               )
+
+                    )
+
+          (describe "navigation functions"
+                    (before-each
+                     (add-to-list 'org-noter--doc-goto-location-hook #'org-noter-location-test-goto-location)
+                     (spy-on 'org-noter-location-test-goto-location :and-return-value t)
+                     )
+
+                    (it "goto-location-hook works"
+                        (with-mock-contents
+                         mock-contents-simple-notes-file-with-locations
+                         '(lambda ()
+                            (org-noter-core-test-create-session)
+                            (search-forward "Heading2")
+                            (org-noter-sync-current-note)
+                            ;; (expect 'org-noter-location-test-goto-location :to-have-been-called)
+                            )
+
+                         ))
+
+
+
 
                     )
           )
