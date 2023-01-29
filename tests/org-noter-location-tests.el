@@ -54,9 +54,22 @@ Test
 
           (describe "navigation functions"
                     (before-each
+                     ;; our location handling
                      (add-to-list 'org-noter--doc-goto-location-hook #'org-noter-location-test-goto-location)
                      (spy-on 'org-noter-location-test-goto-location :and-return-value t)
+
+                     ;; not setting the session correctly ¯\_(ツ)_/¯
+                     (spy-on 'org-noter--get-or-read-document-property :and-return-value "pubs/solove-nothing-to-hide.pdf")
+
+
+                     ;; currently not setting the session correctly. set the _test_window inside the test
+                     (spy-on 'org-noter--get-notes-window :and-call-fake (lambda ()
+
+                                                                           _test_window))
                      )
+
+                    (after-each
+                     (setq _test_window nil))
 
                     (it "goto-location-hook works"
                         (with-mock-contents
@@ -64,14 +77,16 @@ Test
                          '(lambda ()
                             (org-noter-core-test-create-session)
                             (search-forward "Heading2")
+                            (org-noter--with-valid-session
+                             ;; make sure we have a notes buffer
+                             (expect (org-noter--session-notes-buffer session) :not :to-be :nil)
+                             (setq _test_window (get-buffer-window (current-buffer)))
+                             )
                             (org-noter-sync-current-note)
-                            ;; (expect 'org-noter-location-test-goto-location :to-have-been-called)
+                            (expect 'org-noter-location-test-goto-location :to-have-been-called)
+                            ;; TODO This will fail because the session is not setup correctly.
+                            ;; (expect 'org-noter-location-test-goto-location :to-have-been-called-with "mode" "location")
                             )
-
                          ))
-
-
-
-
                     )
           )
