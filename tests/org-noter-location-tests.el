@@ -52,6 +52,22 @@ Test
 
                     )
 
+          ;; can't have proper nav without sessions
+          (describe "session"
+                    (it "can get session variables"
+                                  (with-mock-contents
+                                   mock-contents-simple-notes-file-with-locations
+                                   '(lambda ()
+                                      (org-noter-core-test-create-session)
+                                      (org-noter--with-valid-session
+                                       (let ((window (org-noter--get-doc-window))
+                                             (mode (org-noter--session-doc-mode session)))
+                                         ;; TODO: how can we tell if it's a window for real?
+                                         (expect window :not :to-be :nil)
+                                         (expect mode :to-equal "pubs/solove-nothing-to-hide.pdf")))
+                                   )))
+
+                    )
           (describe "navigation functions"
                     (before-each
                      ;; our location handling
