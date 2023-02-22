@@ -40,12 +40,14 @@
 )
 
 
-
-
 ;;;;;;;;;;;
 ;; helpers
 (defun org-noter-core-test-create-session ()
   "Call this manually with an existing notes buffer to generate a new session"
+  ;; params:
+  ;; - ast
+  ;; - document you're opening
+  ;; - path to the notes file
   (org-noter--create-session (org-noter--parse-root) "pubs/solove-nothing-to-hide.pdf" org-noter-test-file))
 
 
